@@ -6,5 +6,6 @@ urlpatterns = [
     path('', include('homepage.urls')),
     path('admin/', admin.site.urls),
     path('login/', include('login.urls')),
+    path('siradig/', include('reader.urls')),
     path('users/', include('users.urls')),
 ]

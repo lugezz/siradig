@@ -1,0 +1,32 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+		<!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <!--
+    <script type="text/javascript" src="{% static 'js/java.js' %}"></script>
+    -->
+	<title>Proceso exitoso</title>
+
+</head>
+<body>
+	<div class="container">
+       <div class="row">
+        <div class="col-6 mx-auto">
+	<h2>Proceso exitoso</h2>
+	 </div>
+      </div>
+     </div>
+<p>Se procesaron {{ archproc }} registros exitosamente </p>
+
+<a href='{{ opath }}'>Descargar el archivo</a>
+
+<a href="{% url 'siradig' %}">Volver</a>
+
+</body>
+</html>

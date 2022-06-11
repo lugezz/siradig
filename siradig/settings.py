@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     # Own
     'homepage',
     'login',
+    'reader',
     'users.apps.UserConfig',
 ]
 

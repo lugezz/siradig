@@ -12,6 +12,9 @@ git clone git@github.com:lugezz/siradig.git
 # Crear entorno virtual
 python3 -m venv env
 
+# Activamos el entorno virtual
+source env/bin/activate
+
 # Instalar requerimientos
 pip install -r requirements.txt
 

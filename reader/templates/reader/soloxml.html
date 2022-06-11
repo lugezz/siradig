@@ -1,0 +1,30 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <!--
+    <script type="text/javascript" src="{% static 'js/java.js' %}"></script>
+    -->
+
+	<title>Solo un archivo</title>
+	<h2> CUIL: {{ titulo }}</h2>
+</head>
+<body>
+	{% for instance in matsolo %}
+	<p>
+		{% for in2 in instance %}
+	     	{{ in2 }} ||
+	    {% endfor %}
+
+    </p>
+	{% endfor %}
+
+	<a href="{% url 'siradig' %} ">Volver</a>
+</body>
+</html>
