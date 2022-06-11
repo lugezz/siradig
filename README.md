@@ -15,7 +15,7 @@ python3 -m venv env
 # Instalar requerimientos
 pip install -r requirements.txt
 
-- Listo! 
+# Listo! 
 ```
 
 ## Uso
@@ -25,7 +25,7 @@ pip install -r requirements.txt
 ```
 
 ## Contribuciones
-Son bienvenidas las Pull Request, para cambios mayores por favor abra un Issue primero para discutir la propuesta del cambio
+Son siempre bienvenidas las Pull Requests, para cambios mayores por favor abra un Issue primero para discutir la propuesta del cambio
 
 Por favor asegurese de actualizar los tests apropiadamente
 
