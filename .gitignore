@@ -1,5 +1,16 @@
-# Entorno virtual
+# Virtual environment
 env/
+
+# Static
+static/
 
 # Flake 8
 .vscode/
+
+# DB
+*.sqlite3
+
+# Others
+Todo.txt
+__pycache__/
+migrations/

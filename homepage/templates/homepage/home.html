@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %} Home Page {% endblock title%}
+{% block content %}
+    <div class="jumbotron">
+        <h1 class="display-4">Bienvenido, {{user.first_name.title|default:'Invitado'}}</h1>
+        <p class="lead">
+            Este es el sistema <b>Siradig Reader</b> construido con la finalidad de simplificar
+            el proceso de lectura masiva de formularios Siradig de AFIP de los empleados.
+        </p>
+        <hr class="my-4">
+        <p class="lead">
+            {% if user.is_authenticated %}
+                <a class="btn btn-primary btn-lg" href="{% url 'logout' %}" role="button">Logout</a>
+            {% else %}
+                <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Sign in</a>
+            {% endif %}
+        </p>
+    </div>
+
+{% endblock content %}
