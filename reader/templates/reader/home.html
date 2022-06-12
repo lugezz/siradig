@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %} Siradig Reader {% endblock title%}
+{% block content %}
+    <div class="jumbotron">
+        <h1 class="display-4 text-primary mt-1">Siradig Reader</h1>
+        <p class="lead">
+            Este es el sistema <b>Siradig Reader</b> desarrollado con la finalidad de simplificar
+            el proceso de lectura masiva de formularios Siradig de AFIP de los empleados.
+        </p>
+
+        <!--Selección de archivo zip con Siradigs -->
+        <div class="container">
+            <!--Formulario -->
+            <h4 class="mt-4 text-info">Seleccione archivo zip con archivos Siradig en formato XML</h4>
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+                  <input type="file" name="upload" accept=".zip">
+                  <br>
+                  <button class="btn btn-dark my-3" type="submit">Descomprimir</button>
+            </form>
+  
+            <!--Ver Archivos descargados-->
+            <u><h5 class="mt-1 text-info">Archivos descargados</h5></u>
+                {% if listado %}
+                <a class="btn btn-dark my-4 mx-4" href="{% url 'siradig'%} ">Limpiar</a>
+                <a class="btn btn-success my-4" href="{% url 'procesa-siradig'%}">Exportar</a>
+
+                <div class="card" style="width: 80%;">
+                    <ul class="list-group list-group-flush">
+                        {% for file_name in listado %}
+                            <li class="list-group-item">
+                                <a href="{% url 'archivoxml' file_name %}">{{ file_name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+              {% else %}
+                 <p class="nada">Sin archivos aun</p>
+              {% endif %}
+              </div>
+            </div>
+          </div>
+        <!--Fin selección-->
+    </div>
+
+{% endblock content %}

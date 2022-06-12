@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+
 from . import formulas
-from .forms import UploadFileForm
 from .models import RegAccesos
 
 import datetime
@@ -9,39 +10,25 @@ import os
 import zipfile
 
 
-def ceci_view(request):
-    return redirect("http://ceciliaprados.com.ar/")
-
-
 @login_required
 def siradig_view(request):
     listado = {}
     dire = ""
-    if request.method == 'POST':
-        # form = UploadFileForm(request.POST, request.FILES)
-        form = UploadFileForm(request.POST, request.FILES)
+    if request.method == 'POST' and request.FILES.get('upload'):
+        # TODO: Validar form
+        listado = lista_zip(request.FILES['upload'])
+        dire = lista_zip_ex(request.FILES['upload'])
 
-        if form.is_valid():
-            listado = lista_zip(request.FILES['file'])
-            dire = lista_zip_ex(request.FILES['file'])
-
-            # Grabo el registro
-            reg1 = RegAccesos(fecha=datetime.datetime.now(), carpeta=dire, autenticado=False)
-            reg1.save()
-
-        else:
-            # TODO: log errores
-            print(form.errors)
-    else:
-        form = UploadFileForm()
+        # Grabo el registro
+        reg1 = RegAccesos(fecha=datetime.datetime.now(), carpeta=dire, autenticado=False)
+        reg1.save()
 
     my_context = {
-        'form': form,
         'listado': listado,
-        'dire': dire,
+        # 'dire': dire,
     }
 
-    return render(request, 'reader/siradig.html', my_context)
+    return render(request, 'reader/home.html', my_context)
 
 
 @login_required
@@ -65,11 +52,10 @@ def procesa_view(request, *args, **kwargs):
     todotodo = formulas.LeeCarpetaXML(formulas.get_ult_reg().carpeta)
     archproc = (len(todotodo))
 
-    # Por ahora no grabo en la BD
-    # MatToBD(todotodo, str(get_ult_reg().id))
+    # TODO: Registrar en BD
     opath = formulas.MatToExc(todotodo)
-    # opath2 = opath
-    # AbrirExcel(opath)
+    if settings.DEBUG:
+        opath = f'file:///{opath}'
 
     my_context = {
         'archproc': archproc,
@@ -89,8 +75,7 @@ def lista_zip(arch):
 def lista_zip_ex(arch):
     zf = zipfile.ZipFile(arch, "r")
 
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    dirx = os.path.join(os.path.join(BASE_DIR, "temp"), datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
+    dirx = os.path.join(settings.TEMP_ROOT, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
     zf.extractall(path=dirx)
 
     return dirx

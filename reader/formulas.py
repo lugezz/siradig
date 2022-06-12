@@ -1,9 +1,11 @@
-import os
-import xlsxwriter
 import datetime
-import xml.etree.ElementTree as ET
+import os
 import subprocess
 import sys
+
+from django.conf import settings
+import xlsxwriter
+import xml.etree.ElementTree as ET
 
 from .models import Registros, RegAccesos
 
@@ -29,18 +31,13 @@ def ArchenCarp(carpeta):
 
 
 def MatToExc(matriztodo):
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    directorio = os.path.join(BASE_DIR, "temp")
+    directorio = settings.TEMP_ROOT
 
     ahora = datetime.datetime.now()
     # ya = str(ahora.year)+'{:02d}'.format(ahora.month)+'{:02d}'.format(ahora.day)+'{:02d}'.format(ahora.hour)
     ya = '{}{:02d}{:02d}{:02d}{:02d}'.format(ahora.year, ahora.month, ahora.day, ahora.hour, ahora.minute)
 
-    if not os.path.exists(directorio):
-        os.makedirs(directorio)
-
-    opath = os.path.join(directorio, 'resultados_' + ya + '.xlsx')
-    # opath = os.link(directorio, 'resultados_' + ya + '.xlsx')
+    opath = os.path.join(directorio, f'resultados_{ya}.xlsx')
 
     workbook = xlsxwriter.Workbook(opath)
     worksheet = workbook.add_worksheet()
@@ -48,7 +45,7 @@ def MatToExc(matriztodo):
     bold = workbook.add_format({'bold': True})
     money = workbook.add_format({'num_format': '$#,##0'})
 
-    # Start from the first cell row 0 and column 0
+    # Empiezo por el encabezado
     row = 1
     # col = 0
     worksheet.write(0, 0, "CUIT", bold)
@@ -58,21 +55,23 @@ def MatToExc(matriztodo):
     worksheet.write(0, 4, "Dato2", bold)
     worksheet.write(0, 5, "Porc", bold)
 
-    # Iterate through the array you have and unpack the tuple at each index
-    for elm1, elm2, elm3, elm4, elm5, elm6 in matriztodo:
-        worksheet.write(row, 0, elm1)
-        worksheet.write(row, 1, elm2)
-        worksheet.write(row, 2, elm3)
-        worksheet.write(row, 3, elm4)
-        worksheet.write(row, 4, elm5.replace(".", ","), money)
-        worksheet.write(row, 5, elm6)
+    # Itero por cada item de MatrizTodo
+    for elements in matriztodo:
+        print(elements)
+        for idx, item in enumerate(elements):
+            # Proceso los 6 items en cada fila de MatrizTodo
+            # TODO: Agregar la descripción de cada deducción
+            item_format = money if idx == 4 else None
+            print(idx, item)
+            worksheet.write(row, idx, item, item_format)
+
         row += 1
 
     workbook.close()
+    # opath2 = '/' + os.path.join("temp", 'resultados_' + ya + '.xlsx')
+    print(opath)
 
-    opath2 = '/' + os.path.join("temp", 'resultados_' + ya + '.xlsx')
-
-    return opath2
+    return opath
 
 
 def MatToBD(matriztodo, id_regi):
