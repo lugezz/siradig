@@ -28,7 +28,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Add
-    'social_django',
 
     # Own
     'homepage',
