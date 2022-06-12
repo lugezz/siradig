@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 from . import formulas
-from .models import RegAccesos
+from .models import RegAcceso
 
 import datetime
 import os
@@ -20,7 +20,7 @@ def siradig_view(request):
         dire = lista_zip_ex(request.FILES['upload'])
 
         # Grabo el registro
-        reg1 = RegAccesos(fecha=datetime.datetime.now(), carpeta=dire, autenticado=False)
+        reg1 = RegAcceso(fecha=datetime.datetime.now(), carpeta=dire, autenticado=False)
         reg1.save()
 
     my_context = {
@@ -33,11 +33,9 @@ def siradig_view(request):
 
 @login_required
 def archivo_solo_view(request, slug):
-    # print(slug)
-
     dd = os.path.join(str(formulas.get_ult_reg().carpeta), slug)
     matsolo = formulas.LeeXML(dd)
-
+    
     context = {
         'titulo': slug[:11],
         'matsolo': matsolo

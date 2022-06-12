@@ -7,7 +7,8 @@ from django.conf import settings
 import xlsxwriter
 import xml.etree.ElementTree as ET
 
-from .models import Registros, RegAccesos
+from .models import Registro, RegAcceso
+from .deducciones import get_deduccion
 
 
 def LeeCarpetaXML(full_folder):
@@ -38,12 +39,13 @@ def MatToExc(matriztodo):
     ya = '{}{:02d}{:02d}{:02d}{:02d}'.format(ahora.year, ahora.month, ahora.day, ahora.hour, ahora.minute)
 
     opath = os.path.join(directorio, f'resultados_{ya}.xlsx')
-
+    
     workbook = xlsxwriter.Workbook(opath)
     worksheet = workbook.add_worksheet()
 
     bold = workbook.add_format({'bold': True})
-    money = workbook.add_format({'num_format': '$#,##0'})
+    # TODO: money format not working
+    money = workbook.add_format({'num_format': '$#.##0,00'})
 
     # Empiezo por el encabezado
     row = 1
@@ -54,15 +56,14 @@ def MatToExc(matriztodo):
     worksheet.write(0, 3, "Dato1", bold)
     worksheet.write(0, 4, "Dato2", bold)
     worksheet.write(0, 5, "Porc", bold)
+    worksheet.write(0, 6, "Descripción", bold)
 
     # Itero por cada item de MatrizTodo
     for elements in matriztodo:
         print(elements)
         for idx, item in enumerate(elements):
             # Proceso los 6 items en cada fila de MatrizTodo
-            # TODO: Agregar la descripción de cada deducción
             item_format = money if idx == 4 else None
-            print(idx, item)
             worksheet.write(row, idx, item, item_format)
 
         row += 1
@@ -77,7 +78,7 @@ def MatToExc(matriztodo):
 def MatToBD(matriztodo, id_regi):
 
     for elm1, elm2, elm3, elm4, elm5, elm6 in matriztodo:
-        reg2 = Registros(
+        reg2 = Registro(
             id_reg=id_regi,
             cuil=elm1,
             tipo=elm2,
@@ -101,8 +102,7 @@ def AbrirExcel(archi):
 
 
 def get_ult_reg():
-    # resp = RegAccesos.objects.latest('id')
-    resp = RegAccesos.objects.last()
+    resp = RegAcceso.objects.last()
 
     return resp
 
@@ -119,6 +119,7 @@ def LeeXML(full_file):
     dato3 = ""
     dato4 = ""
     dato5 = ""
+    descripcion = ""
     cuit = ""
 
     for child in root:
@@ -145,6 +146,7 @@ def LeeXML(full_file):
                         elif ch3.tag == 'parentesco':
                             dato2 = ch3.text
                             dato1 = ch2.tag
+                            descripcion = get_deduccion(dato1, dato2)
 
                     if dato2 != "" and dato3 != "" and dato4 != "" and dato5 != "":
                         tmp = True
@@ -154,6 +156,7 @@ def LeeXML(full_file):
                         dato1 = ch2.tag
                         dato2 = ch2.attrib['tipo']
                         dato4 = ch3.text
+                        descripcion = get_deduccion(dato1, dato2)
 
                         if ch2.attrib['tipo'] == '99':
                             tmp = False
@@ -170,10 +173,11 @@ def LeeXML(full_file):
                         dato1 = str(ch2.tag)
                         dato2 = str(ch2.attrib['tipo'])
                         dato4 = str(ch3.text)
+                        descripcion = get_deduccion(dato1, dato2)
 
                     if (dato1 + str(dato2) + str(dato4) != "") and tmp:
 
-                        resultado.append([cuit, dato1, dato2, dato3, dato4, dato5])
+                        resultado.append([cuit, dato1, dato2, dato3, dato4, dato5, descripcion])
 
                         dato1 = ""
                         dato2 = ""

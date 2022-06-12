@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import RegAccesos, Registros
+from .models import RegAcceso, Registro
 
-admin.site.register(RegAccesos)
-admin.site.register(Registros)
+admin.site.register(RegAcceso)
+admin.site.register(Registro)

@@ -1,13 +1,13 @@
 from django.db import models
 
 
-class RegAccesos(models.Model):
+class RegAcceso(models.Model):
     fecha = models.DateField(auto_now_add=True)
     carpeta = models.CharField(max_length=100, unique=True)
     autenticado = models.BooleanField()
 
 
-class Registros(models.Model):
+class Registro(models.Model):
     id_reg = models.IntegerField()
     cuil = models.BigIntegerField()
     tipo = models.CharField(max_length=50)
