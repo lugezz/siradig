@@ -2,7 +2,7 @@
 {% block title %}Perfil{% endblock title %}
 {% block content %}
     <div class="row my-3 p-3">
-        <img class="rounded-circle account-img" src="{{ user.profile.avatar.url }} " style="cursor: pointer;"/>
+        <img class="rounded-circle account-img" src="{{ user.profile.avatar.url }}" alt="avatar" style="cursor: pointer;"/>
     </div>
     {% if user_form.errors %}
         <div class="alert alert-danger alert-dismissible" role="alert">
@@ -37,8 +37,9 @@
                 </div>
             </div>
             <br><br>
-            <button type="submit" class="btn btn-dark btn-lg">Grabar cambios</button>
-            <button type="reset" class="btn btn-dark btn-lg">Restablecer</button>
+            <button type="submit" class="btn btn-primary">Grabar cambios</button>
+            <a class="btn btn-secondary .btn-lg" href="{% url 'homepage'%}">Volver Atrás</a>
+            <button type="reset" class="btn btn-dark">Salir</button>
         </form>
     </div>
 {% endblock content %}

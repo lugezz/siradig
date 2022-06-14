@@ -3,6 +3,7 @@ env/
 
 # Static
 static/
+media/
 
 # Flake 8
 .vscode/
