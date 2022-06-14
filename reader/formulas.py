@@ -39,18 +39,18 @@ def MatToExc(matriztodo):
     ya = '{}{:02d}{:02d}{:02d}{:02d}'.format(ahora.year, ahora.month, ahora.day, ahora.hour, ahora.minute)
 
     opath = os.path.join(directorio, f'resultados_{ya}.xlsx')
-    
+
     workbook = xlsxwriter.Workbook(opath)
     worksheet = workbook.add_worksheet()
 
     bold = workbook.add_format({'bold': True})
-    # TODO: money format not working
-    money = workbook.add_format({'num_format': '$#.##0,00'})
+    # TODO: no funciona formato moneda
+    money = workbook.add_format({'num_format': '$#,##0.00'})
 
     # Empiezo por el encabezado
     row = 1
     # col = 0
-    worksheet.write(0, 0, "CUIT", bold)
+    worksheet.write(0, 0, "CUIL", bold)
     worksheet.write(0, 1, "Deducción", bold)
     worksheet.write(0, 2, "Tipo", bold)
     worksheet.write(0, 3, "Dato1", bold)
@@ -60,12 +60,18 @@ def MatToExc(matriztodo):
 
     # Itero por cada item de MatrizTodo
     for elements in matriztodo:
-        print(elements)
         for idx, item in enumerate(elements):
             # Proceso los 6 items en cada fila de MatrizTodo
-            item_format = money if idx == 4 else None
-            worksheet.write(row, idx, item, item_format)
+            item_format = money if (idx == 4 and elements[1] != 'cargaFamilia') else None
 
+            if idx == 1 or idx == 6:
+                worksheet.write(row, idx, item)
+            else:
+                if elements[1] == 'GANLIQOTROSEMPENT' and idx == 2:
+                    worksheet.write(row, idx, item)
+                else:
+                    val_item = 0 if not item else float(item)
+                    worksheet.write_number(row, idx, val_item, item_format)
         row += 1
 
     workbook.close()

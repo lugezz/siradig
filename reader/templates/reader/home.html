@@ -2,7 +2,7 @@
 {% block title %} Siradig Reader {% endblock title%}
 {% block content %}
     <div class="jumbotron">
-        <h1 class="display-4 text-primary mt-1">Siradig Reader</h1>
+        <h1 class="display-4 text-primary mb-1">Siradig Reader</h1>
         <p class="lead">
             Este es el sistema <b>Siradig Reader</b> desarrollado con la finalidad de simplificar
             el proceso de lectura masiva de formularios Siradig de AFIP de los empleados.
@@ -20,11 +20,13 @@
             </form>
   
             <!--Ver Archivos descargados-->
-            <u><h5 class="mt-1 text-info">Archivos descargados</h5></u>
+            <u><h5 class="mt-1 ml-1 text-info">Archivos descargados</h5></u>
                 {% if listado %}
-                <a class="btn btn-dark my-4 mx-4" href="{% url 'siradig'%} ">Limpiar</a>
-                <a class="btn btn-success my-4" href="{% url 'procesa-siradig'%}">Exportar</a>
-
+                <div class="container">
+                    <a class="btn btn-dark mr-4 mt-2 .btn-lg" href="{% url 'siradig'%} ">Limpiar</a>
+                    <a class="btn btn-success mt-2 .btn-lg" href="{% url 'procesa-siradig'%}">Exportar</a>
+                    <p class="card-text"><small class="text-muted">{{ listado|length }} archivos descargados</small></p>
+                </div>
                 <div class="card" style="width: 80%;">
                     <ul class="list-group list-group-flush">
                         {% for file_name in listado %}
