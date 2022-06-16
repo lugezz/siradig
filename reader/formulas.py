@@ -32,13 +32,12 @@ def ArchenCarp(carpeta):
 
 
 def MatToExc(matriztodo):
-    directorio = settings.TEMP_ROOT
-
     ahora = datetime.datetime.now()
-    # ya = str(ahora.year)+'{:02d}'.format(ahora.month)+'{:02d}'.format(ahora.day)+'{:02d}'.format(ahora.hour)
     ya = '{}{:02d}{:02d}{:02d}{:02d}'.format(ahora.year, ahora.month, ahora.day, ahora.hour, ahora.minute)
 
-    opath = os.path.join(directorio, f'resultados_{ya}.xlsx')
+    directorio = settings.TEMP_ROOT
+    file_name = f'resultados_{ya}.xlsx'
+    opath = os.path.join(directorio, file_name)
 
     workbook = xlsxwriter.Workbook(opath)
     worksheet = workbook.add_worksheet()
@@ -75,10 +74,8 @@ def MatToExc(matriztodo):
         row += 1
 
     workbook.close()
-    # opath2 = '/' + os.path.join("temp", 'resultados_' + ya + '.xlsx')
-    print(opath)
 
-    return opath
+    return file_name
 
 
 def MatToBD(matriztodo, id_regi):

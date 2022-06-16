@@ -11,7 +11,7 @@
         <!--Selección de archivo zip con Siradigs -->
         <div class="container">
             <!--Formulario -->
-            <h4 class="mt-4 text-info">Seleccione archivo zip con archivos Siradig en formato XML</h4>
+            <h4 class="mt-4 text-info">Seleccione archivo zip descargado de AFIP</h4>
             <form method="post" enctype="multipart/form-data">
               {% csrf_token %}
                   <input type="file" name="upload" accept=".zip">

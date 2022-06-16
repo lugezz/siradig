@@ -118,6 +118,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
 TEMP_ROOT = BASE_DIR / 'temp'
+TEMP_URL = '/temp/'
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = 'login'

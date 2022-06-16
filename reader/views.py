@@ -1,31 +1,42 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from pathlib import Path
+import shutil
 
 from . import formulas
-from .models import RegAcceso
+from .models import RegAcceso, Registro
 
 import datetime
 import os
 import zipfile
 
 
+def get_carpeta():
+    archivo_path = os.path.join(settings.TEMP_ROOT, 'ultima_carpeta.txt')
+    with open(archivo_path, "r") as f:
+        carpeta = f.readlines()
+
+    return Path(carpeta[0])
+
+
 @login_required
 def siradig_view(request):
     listado = {}
-    dire = ""
     if request.method == 'POST' and request.FILES.get('upload'):
         # TODO: Validar form
         listado = lista_zip(request.FILES['upload'])
         dire = lista_zip_ex(request.FILES['upload'])
+        archivo_path = os.path.join(settings.TEMP_ROOT, 'ultima_carpeta.txt')
+        with open(archivo_path, 'w') as f:
+            f.write(dire)
 
-        # Grabo el registro
-        reg1 = RegAcceso(fecha=datetime.datetime.now(), carpeta=dire, autenticado=False)
-        reg1.save()
+    else:
+        # TODO: Borro los archivos en carpeta temporal
+        shutil.rmtree(settings.TEMP_ROOT)
 
     my_context = {
         'listado': listado,
-        # 'dire': dire,
     }
 
     return render(request, 'reader/home.html', my_context)
@@ -33,9 +44,10 @@ def siradig_view(request):
 
 @login_required
 def archivo_solo_view(request, slug):
-    dd = os.path.join(str(formulas.get_ult_reg().carpeta), slug)
+    # TODO: Agregar validaciones de archivos
+    dd = os.path.join(get_carpeta(), slug)
     matsolo = formulas.LeeXML(dd)
-    
+
     context = {
         'titulo': slug[:11],
         'matsolo': matsolo
@@ -47,18 +59,31 @@ def archivo_solo_view(request, slug):
 @login_required
 def procesa_view(request, *args, **kwargs):
 
-    todotodo = formulas.LeeCarpetaXML(formulas.get_ult_reg().carpeta)
-    archproc = (len(todotodo))
+    todotodo = formulas.LeeCarpetaXML(get_carpeta())
 
-    # TODO: Registrar en BD
-    opath = formulas.MatToExc(todotodo)
-    if settings.DEBUG:
-        opath = f'file:///{opath}'
+    file_name = formulas.MatToExc(todotodo)
+    url_to_file = os.path.join(settings.TEMP_URL, file_name)
 
     my_context = {
-        'archproc': archproc,
-        'opath': opath
+        'archproc': len(todotodo),
+        'url_to_file': url_to_file
     }
+
+    # Registro en BD
+    # Grabo el registro único si no existe
+    registro = RegAcceso(reg_user=request.user)
+    registro.save()
+
+    # Grabo cada uno de los registro
+    for informacion in todotodo:
+        this_registro = Registro(id_reg=registro,
+                                 cuil=informacion[0],
+                                 deduccion=informacion[1],
+                                 tipo=informacion[2],
+                                 dato1=informacion[3],
+                                 dato2=informacion[4],
+                                 porc=informacion[5])
+        this_registro.save()
 
     return render(request, 'reader/procesa.html', my_context)
 
