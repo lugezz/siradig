@@ -10,4 +10,5 @@ urlpatterns = [
     path('', siradig_view, name='siradig'),
     path('procesa/', procesa_view, name='procesa-siradig'),
     path('solo/<slug>/', archivo_solo_view, name='archivoxml'),
+    path('historico/<slug>/', archivo_solo_view, name='historico'),
 ]

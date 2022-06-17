@@ -42,32 +42,53 @@ def MatToExc(matriztodo):
     workbook = xlsxwriter.Workbook(opath)
     worksheet = workbook.add_worksheet()
 
-    bold = workbook.add_format({'bold': True})
-    # TODO: no funciona formato moneda
     money = workbook.add_format({'num_format': '$#,##0.00'})
+    header_format = workbook.add_format({'bold': True,
+                                         'align': 'center',
+                                         'valign': 'vcenter',
+                                         'fg_color': '#D7E4BC',
+                                         'border': 1})
+    center_format = workbook.add_format({'align': 'center'})
+    no_format = workbook.add_format()
+
+    center_format.set_font_name('Arial')
+    center_format.set_font_size(8)
+    header_format.set_font_name('Arial')
+    header_format.set_font_size(8)
+    money.set_font_name('Arial')
+    money.set_font_size(8)
+    no_format.set_font_name('Arial')
+    no_format.set_font_size(8)
 
     # Empiezo por el encabezado
     row = 1
     # col = 0
-    worksheet.write(0, 0, "CUIL", bold)
-    worksheet.write(0, 1, "Deducción", bold)
-    worksheet.write(0, 2, "Tipo", bold)
-    worksheet.write(0, 3, "Dato1", bold)
-    worksheet.write(0, 4, "Dato2", bold)
-    worksheet.write(0, 5, "Porc", bold)
-    worksheet.write(0, 6, "Descripción", bold)
+    worksheet.write(0, 0, "CUIL", header_format)
+    worksheet.write(0, 1, "Deducción", header_format)
+    worksheet.write(0, 2, "Tipo", header_format)
+    worksheet.write(0, 3, "Dato1", header_format)
+    worksheet.write(0, 4, "Dato2", header_format)
+    worksheet.write(0, 5, "Porc", header_format)
+    worksheet.write(0, 6, "Descripción", header_format)
+
+    # Algo de formato
+    worksheet.set_column('A:A', 12)
+    worksheet.set_column('B:B', 20)
+    worksheet.set_column('E:E', 12)
+    worksheet.set_column('G:G', 60)
+    worksheet.freeze_panes(1, 1)
 
     # Itero por cada item de MatrizTodo
     for elements in matriztodo:
         for idx, item in enumerate(elements):
             # Proceso los 6 items en cada fila de MatrizTodo
-            item_format = money if (idx == 4 and elements[1] != 'cargaFamilia') else None
+            item_format = money if (idx == 4 and elements[1] != 'cargaFamilia') else center_format
 
             if idx == 1 or idx == 6:
-                worksheet.write(row, idx, item)
+                worksheet.write(row, idx, item, no_format)
             else:
                 if elements[1] == 'GANLIQOTROSEMPENT' and idx == 2:
-                    worksheet.write(row, idx, item)
+                    worksheet.write(row, idx, item, no_format)
                 else:
                     val_item = 0 if not item else float(item)
                     worksheet.write_number(row, idx, val_item, item_format)

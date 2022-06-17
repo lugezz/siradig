@@ -23,6 +23,8 @@ def get_carpeta():
 @login_required
 def siradig_view(request):
     listado = {}
+    query_historia = RegAcceso.objects.filter(reg_user=request.user)
+
     if request.method == 'POST' and request.FILES.get('upload'):
         # TODO: Validar form
         listado = lista_zip(request.FILES['upload'])
@@ -32,11 +34,12 @@ def siradig_view(request):
             f.write(dire)
 
     else:
-        # TODO: Borro los archivos en carpeta temporal
-        shutil.rmtree(settings.TEMP_ROOT)
+        # Borro los archivos en carpeta temporal
+        clean_folder(settings.TEMP_ROOT)
 
     my_context = {
         'listado': listado,
+        'query_historia': query_historia,
     }
 
     return render(request, 'reader/home.html', my_context)
@@ -102,3 +105,11 @@ def lista_zip_ex(arch):
     zf.extractall(path=dirx)
 
     return dirx
+
+
+def clean_folder(path_to_folder):
+    for path in Path(path_to_folder).glob("**/*"):
+        if path.is_file():
+            path.unlink()
+        elif path.is_dir():
+            shutil.rmtree(path)

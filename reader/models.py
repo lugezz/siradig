@@ -9,9 +9,12 @@ class RegAcceso(models.Model):
     def __str__(self):
         return f'{self.id} - {self.reg_user} - {self.fecha.strftime("%d/%m/%Y")}'
 
+    class Meta:
+        ordering = ['-fecha']
+
 
 class Registro(models.Model):
-    id_reg = models.ForeignKey(RegAcceso, on_delete=models.CASCADE)
+    id_reg = models.ForeignKey(RegAcceso, on_delete=models.CASCADE, related_name='registers')
     cuil = models.BigIntegerField()
     deduccion = models.CharField(max_length=50)
     tipo = models.CharField(max_length=50)
