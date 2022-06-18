@@ -124,8 +124,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp-relay.sendinblue.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'definir-en-local-settings.py'
-EMAIL_HOST_PASSWORD = 'definir-en-local-settings.py'
+EMAIL_HOST_USER = ''  # definir-en-local-settings.py
+EMAIL_HOST_PASSWORD = '' # definir-en-local-settings.py
 # ------------------------------------------------------
 
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
