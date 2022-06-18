@@ -68,14 +68,13 @@ WSGI_APPLICATION = 'siradig.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
+# Reemplaza esto en el archivo local_settings.py acorde a la base de datos
+# que quieres usar (por ejemplo PostgreSQL o MySQL)
 
-BD_CONFIG_PATH = str(BASE_DIR / 'my_db.cnf')
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'read_default_file': BD_CONFIG_PATH,
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mydatabase',
     }
 }
 
@@ -108,10 +107,6 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-    '/var/www/static/',
-]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -125,12 +120,20 @@ LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/login/'
 
 # Email configs --------------------------------------
+# Usar local-settings para actualizar estos valores
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp-relay.sendinblue.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = str(os.getenv('EMAIL_USER'))
-EMAIL_HOST_PASSWORD = str(os.getenv('EMAIL_PASSWORD'))
+EMAIL_HOST_USER = 'definir-en-local-settings.py'
+EMAIL_HOST_PASSWORD = 'definir-en-local-settings.py'
 # ------------------------------------------------------
 
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
+
+
+# sobreescribir las configueraciones necesarias para tu entorno.
+try:
+    from siradig.local_settings import *
+except ImportError:
+    pass

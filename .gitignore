@@ -6,10 +6,10 @@ env/
 
 # DB
 *.sqlite3
+my_db.cnf
 
 # Others
 Todo.txt
 __pycache__/
-migrations/
 temp/
-.env
+local_settings.py
