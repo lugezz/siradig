@@ -1,6 +1,9 @@
 # Virtual environment
 env/
 
+# static
+/static
+
 # Flake 8
 .vscode/
 
