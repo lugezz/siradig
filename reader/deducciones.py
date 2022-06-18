@@ -50,4 +50,7 @@ def get_deduccion(tipo, indice):
     if DEDUCCIONES.get(tipo):
         resp = DEDUCCIONES[tipo].get(indice)
 
+    if tipo == "GANLIQOTROSEMPENT":
+        resp = f"{tipo} - {indice}"
+
     return resp

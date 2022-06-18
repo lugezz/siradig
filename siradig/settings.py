@@ -121,7 +121,7 @@ TEMP_ROOT = BASE_DIR / 'temp'
 TEMP_URL = '/temp/'
 
 LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = 'login'
+LOGIN_URL = '/login/'
 
 # Email configs --------------------------------------
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

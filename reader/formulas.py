@@ -7,7 +7,7 @@ from django.conf import settings
 import xlsxwriter
 import xml.etree.ElementTree as ET
 
-from .models import Registro, RegAcceso
+from .models import Registro
 from .deducciones import get_deduccion
 
 
@@ -125,7 +125,6 @@ def QueryToExc(id, query):
 
     # Empiezo por el encabezado
     row = 1
-    # col = 0
     worksheet.write(0, 0, "CUIL", header_format)
     worksheet.write(0, 1, "Deducción", header_format)
     worksheet.write(0, 2, "Tipo", header_format)
@@ -143,24 +142,28 @@ def QueryToExc(id, query):
 
     # Itero por cada item de MatrizTodo
     for item in query:
-        worksheet.write(row, 0, item.cuil, center_format)
+        worksheet.write_number(row, 0, item.cuil, center_format)
         worksheet.write(row, 1, item.deduccion, no_format)
 
         if item.deduccion == 'GANLIQOTROSEMPENT':
             worksheet.write(row, 2, item.tipo, no_format)
         else:
-            worksheet.write(row, 2, item.tipo, center_format)
+            val_item = 0 if not item.tipo else float(item.tipo)
+            worksheet.write_number(row, 2, val_item, center_format)
 
-        worksheet.write(row, 3, item.dato1, center_format)
+        val_item = 0 if not item.dato1 else int(item.dato1)
+        worksheet.write_number(row, 3, int(val_item), center_format)
 
         if item.deduccion == 'cargaFamilia':
-            worksheet.write(row, 4, item.dato2, center_format)
+            worksheet.write_number(row, 4, int(item.dato2), center_format)
         else:
-            worksheet.write(row, 4, item.dato2, money)
+            worksheet.write_number(row, 4, float(item.dato2), money)
 
-        worksheet.write(row, 5, item.porc, center_format)
+        val_item = 0 if not item.porc else float(item.porc)
+        worksheet.write_number(row, 5, val_item, center_format)
+
+        worksheet.write(row, 6, get_deduccion(item.deduccion, item.tipo), no_format)
         row += 1
-
     workbook.close()
 
 
@@ -181,19 +184,12 @@ def MatToBD(matriztodo, id_regi):
 
 
 def AbrirExcel(archi):
-
     if sys.platform == "win32":
         os.startfile(archi)
 
     else:
         opener = "open" if sys.platform == "darwin" else "xdg-open"
         subprocess.call([opener, archi])
-
-
-def get_ult_reg():
-    resp = RegAcceso.objects.last()
-
-    return resp
 
 
 def LeeXML(full_file):

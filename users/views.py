@@ -40,7 +40,6 @@ class RegisterView(View):
         return render(request, self.template_name, {'form': form})
 
 
-# Class based view que extiende el LoginView original
 class CustomLoginView(LoginView):
     form_class = LoginForm
 

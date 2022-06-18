@@ -2,7 +2,9 @@
 {% block title %} Siradig Individual - CUIT: {{ titulo }}{% endblock title%}
 {% block content %}
 <div class="jumbotron">
-    <h2 class="display-5 text-primary mb-1">CUIL: {{ titulo }}</h2>
+    <h2 class="display-5 text-primary mb-5" style="display: inline">CUIL: {{ titulo }}</h2>
+    <a class="btn btn-dark mx-4 mb-3 .btn-lg" href="javascript:history.back()">Volver</a>
+
     <table class="table">
         <thead>
         <tr>
@@ -25,8 +27,6 @@
             {% endfor %}
         </tbody>
     </table>
-    <a href="javascript:history.back()">Volver Atrás</a>
 </div>
-
 
 {% endblock content %}
