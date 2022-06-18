@@ -91,6 +91,7 @@ def procesa_view(request, *args, **kwargs):
     url_to_file = os.path.join(settings.TEMP_URL, file_name)
 
     my_context = {
+        'titulo': 'Proceso exitoso',
         'archproc': len(todotodo),
         'url_to_file': url_to_file
     }
@@ -132,6 +133,7 @@ def procesa_hist_view(request, id):
     url_to_file = os.path.join(settings.TEMP_URL, f"Presentacion_{id}.xlsx")
 
     my_context = {
+        'titulo': 'Archivo listo para la descarga',
         'archproc': query.count(),
         'url_to_file': url_to_file,
     }
