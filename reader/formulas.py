@@ -99,6 +99,71 @@ def MatToExc(matriztodo):
     return file_name
 
 
+def QueryToExc(id, query):
+    opath = os.path.join(settings.TEMP_ROOT, f"Presentacion_{id}.xlsx")
+
+    workbook = xlsxwriter.Workbook(opath)
+    worksheet = workbook.add_worksheet()
+
+    money = workbook.add_format({'num_format': '$#,##0.00'})
+    header_format = workbook.add_format({'bold': True,
+                                         'align': 'center',
+                                         'valign': 'vcenter',
+                                         'fg_color': '#D7E4BC',
+                                         'border': 1})
+    center_format = workbook.add_format({'align': 'center'})
+    no_format = workbook.add_format()
+
+    center_format.set_font_name('Arial')
+    center_format.set_font_size(8)
+    header_format.set_font_name('Arial')
+    header_format.set_font_size(8)
+    money.set_font_name('Arial')
+    money.set_font_size(8)
+    no_format.set_font_name('Arial')
+    no_format.set_font_size(8)
+
+    # Empiezo por el encabezado
+    row = 1
+    # col = 0
+    worksheet.write(0, 0, "CUIL", header_format)
+    worksheet.write(0, 1, "Deducción", header_format)
+    worksheet.write(0, 2, "Tipo", header_format)
+    worksheet.write(0, 3, "Dato1", header_format)
+    worksheet.write(0, 4, "Dato2", header_format)
+    worksheet.write(0, 5, "Porc", header_format)
+    worksheet.write(0, 6, "Descripción", header_format)
+
+    # Algo de formato
+    worksheet.set_column('A:A', 12)
+    worksheet.set_column('B:B', 20)
+    worksheet.set_column('E:E', 12)
+    worksheet.set_column('G:G', 60)
+    worksheet.freeze_panes(1, 1)
+
+    # Itero por cada item de MatrizTodo
+    for item in query:
+        worksheet.write(row, 0, item.cuil, center_format)
+        worksheet.write(row, 1, item.deduccion, no_format)
+
+        if item.deduccion == 'GANLIQOTROSEMPENT':
+            worksheet.write(row, 2, item.tipo, no_format)
+        else:
+            worksheet.write(row, 2, item.tipo, center_format)
+
+        worksheet.write(row, 3, item.dato1, center_format)
+
+        if item.deduccion == 'cargaFamilia':
+            worksheet.write(row, 4, item.dato2, center_format)
+        else:
+            worksheet.write(row, 4, item.dato2, money)
+
+        worksheet.write(row, 5, item.porc, center_format)
+        row += 1
+
+    workbook.close()
+
+
 def MatToBD(matriztodo, id_regi):
 
     for elm1, elm2, elm3, elm4, elm5, elm6 in matriztodo:
