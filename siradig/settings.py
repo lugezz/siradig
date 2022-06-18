@@ -102,16 +102,15 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es-AR'
 TIME_ZONE = 'America/Argentina/Cordoba'
-
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-MEDIA_ROOT = BASE_DIR / 'media'
+# more custom folders STATICFILES_DIRS = ['siradig/static']
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'static'
 MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 TEMP_ROOT = BASE_DIR / 'temp'
 TEMP_URL = '/temp/'
