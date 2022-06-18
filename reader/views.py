@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from pathlib import Path
 import shutil
 
@@ -46,6 +46,28 @@ def siradig_view(request):
 
 
 @login_required
+def detalle_presentacion(request, id):
+    q = RegAcceso.objects.get(id=id)
+    user = q.reg_user
+    date_time = q.fecha
+    url = q.get_absolute_url()
+
+    if request.user != user:
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+
+    query = Registro.objects.filter(id_reg=id)
+    titulo = f'Presentación {id} - {date_time.strftime("%d/%m/%Y %H:%M")}'
+
+    context = {
+        'query': query,
+        'titulo': titulo,
+        'url': url,
+    }
+
+    return render(request, 'reader/detalle_presentacion.html', context)
+
+
+@login_required
 def archivo_solo_view(request, slug):
     # TODO: Agregar validaciones de archivos
     dd = os.path.join(get_carpeta(), slug)
@@ -87,6 +109,27 @@ def procesa_view(request, *args, **kwargs):
                                  dato2=informacion[4],
                                  porc=informacion[5])
         this_registro.save()
+
+    return render(request, 'reader/procesa.html', my_context)
+
+
+@login_required
+def procesa_hist_view(request, id):
+    q = RegAcceso.objects.get(id=id)
+    user = q.reg_user
+
+    if request.user != user:
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+
+    query = Registro.objects.filter(id_reg=id)
+    formulas.QueryToExc(id, query)
+
+    url_to_file = os.path.join(settings.TEMP_URL, f"Presentacion_{id}.xlsx")
+
+    my_context = {
+        'archproc': query.count(),
+        'url_to_file': url_to_file,
+    }
 
     return render(request, 'reader/procesa.html', my_context)
 

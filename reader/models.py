@@ -6,6 +6,9 @@ class RegAcceso(models.Model):
     reg_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     fecha = models.DateTimeField(auto_now_add=True)
 
+    def get_absolute_url(self):
+        return f"/siradig/procesa_historico/{self.id}/"
+
     def __str__(self):
         return f'{self.id} - {self.reg_user} - {self.fecha.strftime("%d/%m/%Y")}'
 
@@ -24,3 +27,6 @@ class Registro(models.Model):
 
     def __str__(self) -> str:
         return f'{self.id_reg.reg_user} - {self.id_reg.fecha.strftime("%d/%m/%Y")} - {self.cuil}'
+
+    def get_download_url(self):
+        return f"/procesa_historico/{self.id_reg}/"

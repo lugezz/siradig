@@ -52,7 +52,7 @@
                             <ul class="list-group list-group-flush">
                                 {% for registro in query_historia %}
                                     <li class="list-group-item text-center">
-                                        <a href="{% url 'historico' registro.id %}">{{ registro.fecha|date:"d/m/Y h:i a" }}</a>
+                                        <a href="{% url 'presentaciones' registro.id %}">{{ registro.fecha|date:"d/m/Y h:i a" }}</a>
                                         <small class="text-muted">{{ registro.registers.count }} registros</small>
                                     </li>
                                 {% endfor %}
