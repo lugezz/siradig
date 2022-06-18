@@ -18,7 +18,17 @@ source env/bin/activate
 # Instalar requerimientos
 pip install -r requirements.txt
 
-# Listo! 
+# Creación Base de Datos MySQL
+mysql -u root -p
+CREATE DATABASE siradig CHARACTER SET utf8;
+
+En archivo my_db.cnf cambiar usuario y contraseña del usuario de MySQL con privilegios
+
+# SMTP Config
+En archivo .env en el directorio raiz deben configurarse las siguientes variables de entorno:
+- EMAIL_USER=mi_smtp@email.com
+- EMAIL_PASSWORD=contreseña
+
 ```
 
 ## Uso

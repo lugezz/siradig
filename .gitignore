@@ -16,3 +16,4 @@ Todo.txt
 __pycache__/
 migrations/
 temp/
+.env
