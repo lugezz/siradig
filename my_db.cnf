@@ -1,6 +1,0 @@
-[client]
-database = siradig
-user = root
-password = root
-HOST = localhost
-PORT = 3306

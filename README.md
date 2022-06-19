@@ -3,38 +3,21 @@
 Siradig Reader fue desarrollado con la finalidad de simplificar
 el proceso de lectura masiva de formularios Siradig de AFIP de los empleados.
 
-## Procedimiento de instalación
-
-```bash
-# Descargar repositorio
-git clone git@github.com:lugezz/siradig.git
-
-# Crear entorno virtual
-python3 -m venv env
-
-# Activamos el entorno virtual
-source env/bin/activate
-
-# Instalar requerimientos
-pip install -r requirements.txt
-
-# Creación Base de Datos MySQL
-mysql -u root -p
-CREATE DATABASE siradig CHARACTER SET utf8;
-
-En archivo my_db.cnf cambiar usuario y contraseña del usuario de MySQL con privilegios
-
-# SMTP Config
-En archivo .env en el directorio raiz deben configurarse las siguientes variables de entorno:
-- EMAIL_USER=mi_smtp@email.com
-- EMAIL_PASSWORD=contreseña
-
-```
-
 ## Uso
 
-```
+Para detalles de como iniciar tu entorno lcoal de desarrollo, ingresa [aqui](docs/entorno-local.md)
 
+## SMTP Config
+Para que esta aplicacion sea capaz de enviar emails debes actualizar el archivo `local_settings.py`
+con las referencias a tu servidor SMTP.
+
+```
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp-relay.sendinblue.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'tu usuaurio'
+EMAIL_HOST_PASSWORD = 'tu clave'
 ```
 
 ## Contribuciones
