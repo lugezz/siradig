@@ -5,7 +5,7 @@ el proceso de lectura masiva de formularios Siradig de AFIP de los empleados.
 
 ## Uso
 
-Para detalles de como iniciar tu entorno lcoal de desarrollo, ingresa [aqui](docs/entorno-local.md)
+Para detalles de como iniciar tu entorno local de desarrollo, ingresa [aqui](docs/entorno-local.md)
 
 ## SMTP Config
 Para que esta aplicacion sea capaz de enviar emails debes actualizar el archivo `local_settings.py`

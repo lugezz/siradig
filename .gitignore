@@ -1,18 +1,15 @@
 # Virtual environment
 env/
 
-# static
-/static
-
 # Flake 8
 .vscode/
 
 # DB
 *.sqlite3
-my_db.cnf
 
 # Others
 Todo.txt
 __pycache__/
 temp/
 local_settings.py
+migrations/

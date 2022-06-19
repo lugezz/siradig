@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -125,14 +124,13 @@ EMAIL_HOST = 'smtp-relay.sendinblue.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = ''  # definir-en-local-settings.py
-EMAIL_HOST_PASSWORD = '' # definir-en-local-settings.py
+EMAIL_HOST_PASSWORD = ''  # definir-en-local-settings.py
 # ------------------------------------------------------
 
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
 
-
-# sobreescribir las configueraciones necesarias para tu entorno.
+# Sobreescribir las configuraciones necesarias para tu entorno.
 try:
     from siradig.local_settings import *
 except ImportError:
-    pass
+    print('local_settings no encontrado')
