@@ -1,7 +1,8 @@
-import datetime
+from datetime import datetime
 import os
 import subprocess
 import sys
+import xmltodict
 
 from django.conf import settings
 import xlsxwriter
@@ -32,7 +33,7 @@ def ArchenCarp(carpeta):
 
 
 def MatToExc(matriztodo):
-    ahora = datetime.datetime.now()
+    ahora = datetime.now()
     ya = '{}{:02d}{:02d}{:02d}{:02d}'.format(ahora.year, ahora.month, ahora.day, ahora.hour, ahora.minute)
 
     directorio = settings.TEMP_ROOT
@@ -280,3 +281,146 @@ def LeeXML(full_file):
                                     resultado.append([cuit, child.tag.upper(), ch5.tag, "", ch5.text, ""])
 
     return resultado
+
+
+# -----------------------------------------------------------------------
+class EmpleadoSiradig:
+    def __init__(self, cuit, nro_presentacion, fecha, deducciones=[],
+                 cargasFamilia=[], ganLiqOtrosEmpEnt=[], retPerPagos=[]):
+        self.cuit = cuit
+        self.nro_presentacion = nro_presentacion
+        self.fecha = fecha
+        self.deducciones = deducciones
+        self.cargasFamilia = cargasFamilia
+        self.ganLiqOtrosEmpEnt = ganLiqOtrosEmpEnt
+        self.retPerPagos = retPerPagos
+
+    def get_cuit(self):
+        return self.cuit
+
+    def get_dict_all(self):
+        diccionario = {
+            'cuit': self.cuit,
+            'deducciones': self.deducciones,
+            'cargasFamilia': self.cargasFamilia,
+            'ganLiqOtrosEmpEnt': self.ganLiqOtrosEmpEnt,
+            'retPerPagos': self.retPerPagos,
+        }
+
+        return diccionario
+
+    def get_total_deducciones(self):
+        resp = 0
+        for deduccion in self.deducciones:
+            resp += deduccion['importe']
+
+
+# -----------------------------------------------------------------------
+# -----------------------------------------------------------------------
+def leeXML3(xml_file):
+    """
+    Lee XML
+    ------
+    Devuelve un objeto Empleado con la información
+    de la presentación y todo lo declarado
+    """
+
+    tree = ET.parse(xml_file)
+    xml_data = tree.getroot()
+    xmlstr = ET.tostring(xml_data, encoding='utf-8', method='xml')
+
+    diccionario_base = xmltodict.parse(xmlstr)
+    cuit = diccionario_base['presentacion']['empleado']['cuit']
+    nro_presentacion = diccionario_base['presentacion']['nroPresentacion']
+    fecha = diccionario_base['presentacion']['fechaPresentacion']
+    fecha = datetime.strptime(fecha, '%Y-%m-%d')
+    deducciones = []
+    cargasFamilia = []
+    ganLiqOtrosEmpEnt = []
+    retPerPagos = []
+
+    # Tomo Deducciones -----------------------------------
+    if diccionario_base['presentacion'].get('deducciones'):
+        lista_deducciones = diccionario_base['presentacion']['deducciones']['deduccion']
+        if type(lista_deducciones) != list:
+            # Para que el bucle no tome los campos
+            lista_deducciones = [lista_deducciones]
+
+        for deduccion in lista_deducciones:
+            subtipo = 0
+            if 'detalles' in deduccion:
+                subtipo = deduccion['detalles']['detalle']['@motivo']
+
+            deducciones.append(
+                {'nombre': 'deduccion',
+                 'tipo': deduccion['@tipo'],
+                 'subtipo': subtipo,
+                 'importe': deduccion['montoTotal'],
+                 'descripcion': get_deduccion('deduccion', deduccion['@tipo'])
+                 }
+            )
+
+    # Tomo Cargas de Familia -----------------------------------
+    if diccionario_base['presentacion'].get('cargasFamilia'):
+        lista_familiares = diccionario_base['presentacion']['cargasFamilia']['cargaFamilia']
+
+        if type(lista_familiares) != list:
+            # Para que el bucle no tome los campos
+            lista_familiares = [lista_familiares]
+
+        for carga_flia in lista_familiares:
+            cargasFamilia.append(
+                {'nombre': 'cargaFamilia',
+                 'tipo': carga_flia['parentesco'],
+                 'desde': carga_flia['mesDesde'],
+                 'hasta': carga_flia['mesHasta'],
+                 'porc': carga_flia['porcentajeDeduccion'],
+                 'descripcion': get_deduccion('cargaFamilia', carga_flia['parentesco'])
+                 }
+            )
+
+    # Tomo Ganancias otros empleadores -----------------------------------
+    if diccionario_base['presentacion'].get('ganLiqOtrosEmpEnt'):
+        lista_gan_otro_emp = diccionario_base['presentacion']['ganLiqOtrosEmpEnt']['empEnt']
+
+        if type(lista_gan_otro_emp) != list:
+            # Para que el bucle no tome los campos
+            lista_gan_otro_emp = [lista_gan_otro_emp]
+
+        for ganancia_OE in lista_gan_otro_emp:
+            for ganancia_mes_OE in ganancia_OE['ingresosAportes']['ingAp']:
+                for item in ganancia_mes_OE:
+                    if ganancia_mes_OE[item] != '0' and item != '@mes':
+                        ganLiqOtrosEmpEnt.append(
+                            {'nombre': 'GanOtroEmpleadores',
+                             'tipo': item,
+                             'importe': ganancia_mes_OE[item],
+                             }
+                        )
+
+    # Tomo Percepciones -----------------------------------
+    if diccionario_base['presentacion'].get('retPerPagos'):
+        lista_percepciones = diccionario_base['presentacion']['retPerPagos']['retPerPago']
+
+        if type(lista_percepciones) != list:
+            # Para que el bucle no tome los campos
+            lista_percepciones = [lista_percepciones]
+
+        for percepcion in lista_percepciones:
+            retPerPagos.append(
+                {'nombre': 'retPerPago',
+                 'tipo': percepcion['@tipo'],
+                 'importe': percepcion['montoTotal'],
+                 'descripcion': get_deduccion('retPerPago', percepcion['@tipo'])
+                 }
+            )
+
+    empleado = EmpleadoSiradig(cuit=cuit,
+                               nro_presentacion=nro_presentacion,
+                               fecha=fecha,
+                               deducciones=deducciones,
+                               cargasFamilia=cargasFamilia,
+                               ganLiqOtrosEmpEnt=ganLiqOtrosEmpEnt,
+                               retPerPagos=retPerPagos)
+
+    return empleado

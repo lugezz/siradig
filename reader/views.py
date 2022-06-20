@@ -8,7 +8,7 @@ import shutil
 from . import formulas
 from .models import RegAcceso, Registro
 
-import datetime
+from datetime import datetime
 import os
 import zipfile
 
@@ -71,12 +71,11 @@ def detalle_presentacion(request, id):
 @login_required
 def archivo_solo_view(request, slug):
     # TODO: Agregar validaciones de archivos
-    dd = os.path.join(get_carpeta(), slug)
-    matsolo = formulas.LeeXML(dd)
+    xml_path = os.path.join(get_carpeta(), slug)
+    siradig_empleado = formulas.leeXML3(xml_path)
 
     context = {
-        'titulo': slug[:11],
-        'matsolo': matsolo
+        'siradig_empleado': siradig_empleado.get_dict_all(),
     }
 
     return render(request, 'reader/soloxml.html', context)
@@ -151,7 +150,7 @@ def lista_zip(arch):
 def lista_zip_ex(arch):
     zf = zipfile.ZipFile(arch, "r")
 
-    dirx = os.path.join(settings.TEMP_ROOT, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
+    dirx = os.path.join(settings.TEMP_ROOT, datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
     zf.extractall(path=dirx)
 
     return dirx
