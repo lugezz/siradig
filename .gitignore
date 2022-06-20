@@ -12,4 +12,7 @@ Todo.txt
 __pycache__/
 temp/
 local_settings.py
-migrations/
+
+/static
+/media
+my_db.cnf
