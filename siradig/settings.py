@@ -12,8 +12,7 @@ SECRET_KEY = 'django-insecure-xhr-%=1il%ev_jbne2$u=bc1rp0n@ngb=c%u_%7oa)u(_$=b)p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'elconta.com.ar', 'www.elconta.com.ar', '54.241.109.209']
 
 # Application definition
 
