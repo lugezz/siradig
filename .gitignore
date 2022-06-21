@@ -12,7 +12,7 @@ Todo.txt
 __pycache__/
 temp/
 local_settings.py
-ultima*.txt
+/carpetas
 
 /static
 profile_images/
