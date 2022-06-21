@@ -13,8 +13,8 @@ import os
 import zipfile
 
 
-def get_carpeta():
-    archivo_path = os.path.join(settings.TEMP_ROOT, 'ultima_carpeta.txt')
+def get_carpeta(usuario):
+    archivo_path = os.path.join('carpetas/', f'ultima_carpeta {usuario}.txt')
     with open(archivo_path, "r") as f:
         carpeta = f.readlines()
 
@@ -30,7 +30,10 @@ def siradig_view(request):
         # TODO: Validar form
         listado = lista_zip(request.FILES['upload'])
         dire = lista_zip_ex(request.FILES['upload'])
-        archivo_path = os.path.join(settings.TEMP_ROOT, 'ultima_carpeta.txt')
+        if not os.path.exists('carpetas/'):
+            os.mkdir('carpetas')
+
+        archivo_path = os.path.join('carpetas/', f'ultima_carpeta {request.user}.txt')
         with open(archivo_path, 'w') as f:
             f.write(dire)
 
@@ -71,8 +74,8 @@ def detalle_presentacion(request, id):
 @login_required
 def archivo_solo_view(request, slug):
     # TODO: Agregar validaciones de archivos
-    xml_path = os.path.join(get_carpeta(), slug)
-    siradig_empleado = formulas.leeXML3(xml_path)
+    xml_path = os.path.join(get_carpeta(request.user), slug)
+    siradig_empleado = formulas.leeXML(xml_path)
 
     context = {
         'siradig_empleado': siradig_empleado.get_dict_all(),
@@ -82,34 +85,17 @@ def archivo_solo_view(request, slug):
 
 
 @login_required
-def procesa_view(request, *args, **kwargs):
+def procesa_view(request):
 
-    todotodo = formulas.LeeCarpetaXML(get_carpeta())
-
-    file_name = formulas.MatToExc(todotodo)
-    url_to_file = os.path.join(settings.TEMP_URL, file_name)
+    id_reg = formulas.RegistraCarpetaXML(request.user, get_carpeta(request.user))
+    query = Registro.objects.filter(id_reg=id_reg)
+    url_to_file = os.path.join(settings.TEMP_URL, f"Presentacion_{id_reg}.xlsx")
 
     my_context = {
         'titulo': 'Proceso exitoso',
-        'archproc': len(todotodo),
-        'url_to_file': url_to_file
+        'archproc': query.count(),
+        'url_to_file': url_to_file,
     }
-
-    # Registro en BD
-    # Grabo el registro único si no existe
-    registro = RegAcceso(reg_user=request.user)
-    registro.save()
-
-    # Grabo cada uno de los registro
-    for informacion in todotodo:
-        this_registro = Registro(id_reg=registro,
-                                 cuil=informacion[0],
-                                 deduccion=informacion[1],
-                                 tipo=informacion[2],
-                                 dato1=informacion[3],
-                                 dato2=informacion[4],
-                                 porc=informacion[5])
-        this_registro.save()
 
     return render(request, 'reader/procesa.html', my_context)
 
@@ -119,17 +105,23 @@ def no_autorizado(request):
 
 
 @login_required
-def procesa_hist_view(request, id):
-    q = RegAcceso.objects.get(id=id)
-    user = q.reg_user
+def procesa_hist_view(request, id=0):
 
-    if request.user != user:
-        return redirect(f"{reverse('no_autorizado')}?next={request.path}")
+    if id == 0:
+        id_reg = formulas.RegistraCarpetaXML(request.user, get_carpeta(request.user))
 
-    query = Registro.objects.filter(id_reg=id)
-    formulas.QueryToExc(id, query)
+    else:
+        id_reg = id
+        q = RegAcceso.objects.get(id=id_reg)
+        user = q.reg_user
 
-    url_to_file = os.path.join(settings.TEMP_URL, f"Presentacion_{id}.xlsx")
+        if request.user != user:
+            return redirect(f"{reverse('no_autorizado')}?next={request.path}")
+
+    query = Registro.objects.filter(id_reg=id_reg)
+    formulas.QueryToExc(id_reg, query)
+
+    url_to_file = os.path.join(settings.TEMP_URL, f"Presentacion_{id_reg}.xlsx")
 
     my_context = {
         'titulo': 'Archivo listo para la descarga',

@@ -10,7 +10,7 @@ class RegAcceso(models.Model):
         return f"/siradig/procesa_historico/{self.id}/"
 
     def __str__(self):
-        return f'{self.id} - {self.reg_user} - {self.fecha.strftime("%d/%m/%Y")}'
+        return f'{self.id} - {self.reg_user} - {self.fecha.strftime("%d/%m/%Y %H:%M")}'
 
     class Meta:
         ordering = ['-fecha']
@@ -26,7 +26,7 @@ class Registro(models.Model):
     porc = models.CharField(max_length=3, blank=True, null=True)
 
     def __str__(self) -> str:
-        return f'{self.id_reg.reg_user} - {self.id_reg.fecha.strftime("%d/%m/%Y")} - {self.cuil}'
+        return f'{self.id_reg.id} -{self.id_reg.reg_user} - {self.id_reg.fecha.strftime("%d/%m/%Y")} - {self.cuil}'
 
     def get_download_url(self):
         return f"/procesa_historico/{self.id_reg}/"
