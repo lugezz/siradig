@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load my_filters %}
 {% block title %} Siradig Individual - CUIT: {{ siradig_empleado.cuit }}{% endblock title%}
 {% block content %}
 <div class="jumbotron">
@@ -23,7 +24,7 @@
                 <td>{{ deduccion.nombre }}</td>
                 <td>{{ deduccion.tipo }}</td>
                 <td>{{ deduccion.subtipo }}</td>
-                <td>{{ deduccion.importe }}</td>
+                <td>{{ deduccion.importe | currency }}</td>
                 <td>-</td>
                 <td>{{ deduccion.descripcion }}</td>
             </tr>
@@ -49,7 +50,7 @@
                 <td>{{ ganancia_oe.nombre }}</td>
                 <td>{{ ganancia_oe.tipo }}</td>
                 <td> 0 </td>
-                <td>{{ ganancia_oe.importe }}</td>
+                <td>{{ ganancia_oe.importe | currency }}</td>
                 <td> - </td>
                 <td> - </td>
             </tr>
@@ -62,7 +63,7 @@
                 <td>{{ percepcion.nombre }}</td>
                 <td>{{ percepcion.tipo }}</td>
                 <td> 0 </td>
-                <td>{{ percepcion.importe }}</td>
+                <td>{{ percepcion.importe | currency }}</td>
                 <td> - </td>
                 <td>{{ percepcion.descripcion }}</td>
             </tr>

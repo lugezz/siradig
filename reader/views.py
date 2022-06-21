@@ -109,11 +109,13 @@ def procesa_hist_view(request, id=0):
 
     if id == 0:
         id_reg = formulas.RegistraCarpetaXML(request.user, get_carpeta(request.user))
+        titulo = 'Procesado exitosamente'
 
     else:
         id_reg = id
         q = RegAcceso.objects.get(id=id_reg)
         user = q.reg_user
+        titulo = 'Archivo listo para la descarga'
 
         if request.user != user:
             return redirect(f"{reverse('no_autorizado')}?next={request.path}")
@@ -124,7 +126,7 @@ def procesa_hist_view(request, id=0):
     url_to_file = os.path.join(settings.TEMP_URL, f"Presentacion_{id_reg}.xlsx")
 
     my_context = {
-        'titulo': 'Archivo listo para la descarga',
+        'titulo': titulo,
         'archproc': query.count(),
         'url_to_file': url_to_file,
     }

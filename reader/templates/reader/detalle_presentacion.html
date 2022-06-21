@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load my_filters %}
 {% block title %}{{ titulo }}{% endblock title%}
 {% block content %}
 <div class="jumbotron">
@@ -24,7 +25,12 @@
                 <td>{{ item.deduccion }}</td>
                 <td>{{ item.tipo }}</td>
                 <td>{{ item.dato1 }}</td>
-                <td>{{ item.dato2 }}</td>
+                <td>{% if item.deduccion != 'cargaFamilia' %}
+                        {{ item.dato2 | currency }}
+                    {% else %}
+                        {{ item.dato2 }}
+                    {% endif %}
+                </td>
                 <td>{{ item.porc }}</td>
             </tr>
             {% endfor %}
