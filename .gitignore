@@ -13,6 +13,7 @@ __pycache__/
 temp/
 local_settings.py
 /carpetas
+*.log
 
 /static
 profile_images/

@@ -133,3 +133,39 @@ try:
     from siradig.local_settings import *
 except ImportError:
     print('local_settings no encontrado')
+
+# Logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'logging-info.log',
+            'formatter': 'format_function',
+        },
+        'file_error': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': 'logging-error.log',
+            'formatter': 'format_function',
+        },
+    },
+    'formatters': {
+        'format_function': {
+            'format': '[{pathname}:{name}:{levelname}:{funcName}:{asctime}:{module} {process:d} {thread:d}] {message}',
+            'style': '{',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'INFO',
+        },
+    },
+    'root': {
+        'handlers': ['file_error'],
+        'level': 'WARNING',
+        'propagate': True,
+    },
+}
