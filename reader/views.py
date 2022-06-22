@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from pathlib import Path
+import pytz
 import shutil
 
 from . import formulas
@@ -54,13 +55,16 @@ def detalle_presentacion(request, id):
     q = RegAcceso.objects.get(id=id)
     user = q.reg_user
     date_time = q.fecha
+    time_zone = pytz.timezone(settings.TIME_ZONE)
+    date_local = date_time.astimezone(time_zone)
+
     url = q.get_absolute_url()
 
     if request.user != user:
         return redirect(f"{reverse('no_autorizado')}?next={request.path}")
 
     query = Registro.objects.filter(id_reg=id)
-    titulo = f'Presentación {id} - {date_time.strftime("%d/%m/%Y %H:%M")}'
+    titulo = f'Presentación {id} - {date_local.strftime("%d/%m/%Y %H:%M")}'
 
     context = {
         'query': query,
