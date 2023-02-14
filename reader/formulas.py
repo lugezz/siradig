@@ -237,9 +237,9 @@ def leeXML(xml_file):
             subtipo = 0
             if 'detalles' in deduccion:
                 subtipo = deduccion['detalles']['detalle'][0]['@valor']
-            
+
             ded_tipo = deduccion['@tipo']
-            ded_porc = deduccion['porcentajeDedFamiliar'] if ded_tipo = 32 else 0
+            ded_porc = deduccion['porcentajeDedFamiliar'] if ded_tipo == 32 else 0
 
             deducciones.append(
                 {'nombre': 'deduccion',
