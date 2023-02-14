@@ -246,7 +246,7 @@ def leeXML(xml_file):
                  'tipo': ded_tipo,
                  'subtipo': subtipo,
                  'importe': deduccion['montoTotal'],
-                 'descripcion': get_deduccion('deduccion', deduccion['@tipo']),
+                 'descripcion': get_deduccion('deduccion', ded_tipo),
                  'porc': ded_porc
                  }
             )
